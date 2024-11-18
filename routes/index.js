@@ -15,5 +15,11 @@ router.post('/login', UserController.login);
 router.get('/forgot-password', (req, res) => {
     res.render('forgot-password');
 });
+router.post('/forgot-password', UserController.forgotPassword);
+
+router.get('/reset-password', (req, res) => {
+    res.render('reset-password');
+});
+router.post('/reset-password', UserController.resetPassword);
 
 module.exports = router;

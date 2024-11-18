@@ -2,10 +2,11 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const HttpRequestError = require('../utils/error');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { JWT_SECRET } = process.env;
 const prisma = new PrismaClient();
 
-class UserValidation {
+class User {
     static async create({ fullName, email, password }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         
@@ -51,6 +52,51 @@ class UserValidation {
             accessToken
         };
     }
+
+    static async generateResetPasswordToken({ email }) {
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        const passwordResetTokenExpirationDate = new Date(Date.now() + 10 * 60 * 1000); // The token expires after 10 minutes
+
+        await prisma.user.update({
+            where: {
+                email
+            },
+            data: {
+                passwordResetToken: hashedResetToken,
+                passwordResetTokenExpirationDate
+            }
+        });
+
+        return resetToken;
+    }
+
+    static async resetPassword({ token, password }) {
+        const hashedResetToken = crypto.createHash('sha256').update(token).digest('hex');
+        const user = await prisma.user.findFirst({
+            where: {
+                passwordResetToken: hashedResetToken,
+                passwordResetTokenExpirationDate: {
+                    gte: new Date(Date.now()),
+                }
+            }
+        });
+
+        if (!user) {
+            throw new HttpRequestError('Invalid token!', 400);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                password: hashedPassword,
+                passwordResetTokenExpirationDate: new Date(Date.now())
+            }
+        });
+    }
 }
 
-module.exports = UserValidation;
+module.exports = User;
