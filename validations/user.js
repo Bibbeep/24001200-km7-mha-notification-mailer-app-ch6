@@ -26,4 +26,20 @@ module.exports = {
             throw new HttpRequestError('Email already registered', 200);
         }
     },
+    login: async ({ email, password }) => {
+        if (!email || !password) {
+            throw new HttpRequestError('Email and password are required!', 400);
+        }
+
+        if (typeof email !== 'string' ||
+            typeof password !== 'string') {
+            throw new HttpRequestError('Email, and password must be string type!', 400)
+        }
+
+        if (!email.match(
+            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )) {
+            throw new HttpRequestError('Email must be in valid format!', 400);
+        }
+    },
 };

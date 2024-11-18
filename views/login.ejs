@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="login-form" action="/api/login" method="post">
+        <div>
+            <label for="email">Email: </label>
+            <input type="email" name="email" id="email" placeholder="Email" value="<%= email || null %>">
+        </div>
+        <div>
+            <label for="password">Password: </label>
+            <input type="password" name="password" id="password" placeholder="Password">
+        </div>
+        <button type="submit">Log In</button>
+        
+        <p><a href="/api/register">Don't have an account?</a></p>
+        <p><a href="/api/forgot-password">Forgot password?</a></p>
+    </form>
+</body>
+</html>
