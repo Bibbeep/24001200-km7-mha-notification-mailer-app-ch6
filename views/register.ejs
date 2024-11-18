@@ -23,5 +23,45 @@
         <button type="submit">Register</button>
         <p>Already have an account? <a href="/api/login">Log in</a></p>
     </form>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById('register-form');
+
+        socket.on('notification', (msg) => {
+            alert(msg);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const body = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 'OK') {
+                        socket.emit('notification', data.message);
+                        setTimeout(() => {
+                            window.location.href = `/api/login?email=${body.email}`;
+                        }, 2000);
+                    } else {
+                        socket.emit('notification', data.message);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                });
+        });
+    </script>
 </body>
 </html>

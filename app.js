@@ -6,6 +6,7 @@ const express = require('express');
 const morgan = require('morgan');
 const router = require('./routes/index');
 const errorHandler = require('./utils/errorHandler');
+const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -22,11 +23,11 @@ app.use('/api', router);
 app.use(errorHandler);
 
 io.on('connection', (socket) => {
-    socket.on('register', () => {
-        
+    socket.on('notification', (msg) => {
+        io.emit('notification', msg);
     });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });

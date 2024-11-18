@@ -6,9 +6,12 @@ module.exports = {
     create: async (req, res, next) => {
         try {
             await UserValidation.register(req.body);
-            const user = await User.create(req.body);
+            await User.create(req.body);
 
-            res.redirect(`/api/login?email=${user.email}`);
+            return res.status(201).json({
+                status: 'OK',
+                message: 'Welcome! Successfully registered a new account!'
+            });
         } catch (err) {
             next(err);
         }
@@ -52,7 +55,10 @@ module.exports = {
             UserValidation.resetPassword(req.body);
             await User.resetPassword(req.body);
 
-            res.redirect('/api/login');
+            res.status(200).json({
+                status: 'OK',
+                message: 'Password successfully changed'
+            });
         } catch (err) {
             next(err);
         }
