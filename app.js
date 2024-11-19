@@ -8,7 +8,6 @@ const errorHandler = require('./utils/errorHandler');
 const http = require('http');
 const { Server } = require('socket.io');
 const Sentry = require('@sentry/node');
-const HttpRequestError = require('./utils/error');
 
 const app = express();
 const server = http.createServer(app);

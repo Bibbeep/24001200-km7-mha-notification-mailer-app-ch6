@@ -3,6 +3,7 @@ const HttpRequestError = require("./error");
 const Sentry = require('@sentry/node');
 
 module.exports = (err, req, res, next) => {
+    // HttpRequestError.cobaDeh();
     Sentry.captureException(err); // I have to do this bcs custom exception is not captured automatically by Sentry
     if (err instanceof HttpRequestError) {
         return res.status(err.statusCode).json({

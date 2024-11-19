@@ -10,15 +10,13 @@ class User {
     static async create({ fullName, email, password }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        const data = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 fullName,
                 email,
                 password: hashedPassword
             }
         });
-        
-        return data;
     }
 
     static async findByEmail(email) {
