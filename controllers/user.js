@@ -10,7 +10,7 @@ module.exports = {
 
             return res.status(201).json({
                 status: 'OK',
-                message: 'Welcome! Successfully registered a new account!'
+                message: 'Welcome! Successfully registered a new account! Please log in'
             });
         } catch (err) {
             next(err);
@@ -33,7 +33,7 @@ module.exports = {
     forgotPassword: async (req, res, next) => {
         try {
             await UserValidation.forgotPassword(req.body);
-            const resetToken = await User.generateResetPasswordToken(req.body);
+            const resetToken = await User.generatePasswordResetToken(req.body);
             const resetUrl = `${req.protocol}://${req.get('host')}/api/reset-password?token=${resetToken}`;
             
             await sendEmail(
@@ -57,7 +57,7 @@ module.exports = {
 
             res.status(200).json({
                 status: 'OK',
-                message: 'Password successfully changed'
+                message: 'Password successfully changed. Please log in'
             });
         } catch (err) {
             next(err);

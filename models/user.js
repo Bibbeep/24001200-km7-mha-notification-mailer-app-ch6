@@ -53,7 +53,7 @@ class User {
         };
     }
 
-    static async generateResetPasswordToken({ email }) {
+    static async generatePasswordResetToken({ email }) {
         const resetToken = crypto.randomBytes(32).toString('hex');
         const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
         const passwordResetTokenExpirationDate = new Date(Date.now() + 10 * 60 * 1000); // The token expires after 10 minutes
